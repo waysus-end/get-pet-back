@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактирование объявления - GET PET BACK</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">GET PET BACK</div>
+            <ul>
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="all-pets.html">Все животные</a></li>
+                <li><a href="search.html">Поиск</a></li>
+                <li><a href="login.html" id="auth-link">Войти</a></li>
+                <li><a href="profile.html" id="profile-link" style="display:none;">Личный кабинет</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1>Редактирование объявления</h1>
+            
+            <form id="edit-pet-form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="photo1">Фото 1 *</label>
+                    <input type="file" id="photo1" name="photo1" accept=".png">
+                    <div class="current-photos" id="current-photos"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="photo2">Фото 2</label>
+                    <input type="file" id="photo2" name="photo2" accept=".png">
+                </div>
+
+                <div class="form-group">
+                    <label for="photo3">Фото 3</label>
+                    <input type="file" id="photo3" name="photo3" accept=".png">
+                </div>
+
+                <div class="form-group">
+                    <label for="mark">Клеймо</label>
+                    <input type="text" id="mark" name="mark">
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Описание *</label>
+                    <textarea id="description" name="description" rows="4" required></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Сохранить изменения</button>
+                    <button type="button" id="cancel-btn" class="btn-secondary">Отмена</button>
+                    <button type="button" id="delete-btn" class="btn-danger">Удалить объявление</button>
+                </div>
+            </form>
+
+            <div id="message" class="message"></div>
+        </div>
+    </main>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

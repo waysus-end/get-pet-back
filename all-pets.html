@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Все животные - GET PET BACK</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">GET PET BACK</div>
+            <ul>
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="all-pets.html">Все животные</a></li>
+                <li><a href="search.html">Поиск</a></li>
+                <li><a href="login.html" id="auth-link">Войти</a></li>
+                <li><a href="profile.html" id="profile-link" style="display:none;">Личный кабинет</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="page-header">
+                <h1>Все найденные животные</h1>
+                <p>Здесь вы можете увидеть всех животных, которые были найдены и ждут своих хозяев</p>
+            </div>
+
+            <div class="filters">
+                <div class="filter-group">
+                    <select id="kind-filter">
+                        <option value="">Все виды</option>
+                        <option value="кошка">Кошка</option>
+                        <option value="собака">Собака</option>
+                        <option value="птица">Птица</option>
+                    </select>
+                    
+                    <select id="district-filter">
+                        <option value="">Все районы</option>
+                        <option value="Василеостровский">Василеостровский</option>
+                        <option value="Центральный">Центральный</option>
+                        <option value="Приморский">Приморский</option>
+                        <option value="Петроградский">Петроградский</option>
+                        <option value="Адмиралтейский">Адмиралтейский</option>
+                    </select>
+                    
+                    <input type="text" id="search-filter" placeholder="Поиск по кличке...">
+                    
+                    <button onclick="applyFilters()" class="btn-primary">Применить</button>
+                    <button onclick="clearFilters()" class="btn-secondary">Сбросить</button>
+                </div>
+            </div>
+
+            <div id="pets-container" class="pets-grid">
+                <!-- Все карточки животных будут загружены здесь -->
+            </div>
+
+            <div class="back-link">
+                <a href="index.html" class="btn-secondary">← Назад на главную</a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const allPets = [
+            {
+                id: 1,
+                name: "Иван Иванов",
+                phone: "+79111234567",
+                email: "user@user.ru",
+                kind: "Кошка",
+                petName: "Мурка",
+                photos: ['https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/GreekSphynxCat1.png/1280px-GreekSphynxCat1.png'],
+                description: "Найдена маленькая кошечка породы сфинкс, очень грустная. Откликается на кличку Мурка",
+                mark: "VL-0214",
+                district: "Василеостровский",
+                date: "2025-03-20",
+                status: "active",
+                userId: 1
+            },
+            {
+                id: 2,
+                name: "Мария Петрова",
+                phone: "+79119876543",
+                email: "maria@mail.ru",
+                kind: "Собака",
+                petName: "Барсик",
+                photos: ['https://zoopt.ru/upload/webp/resize_cache/773/1148_560_1/f85f1c4e22de5231c962eafc898476a0.webp'],
+                description: "Найден веселый щенок породы лабрадор. Кличка - Барсик, отзывается на имя",
+                mark: "SP-1234",
+                district: "Центральный",
+                date: "2025-03-19",
+                status: "active",
+                userId: 2
+            },
+            {
+                id: 3,
+                name: "Алексей Сидоров",
+                phone: "+79115556677",
+                email: "alex@mail.ru",
+                kind: "Кошка",
+                petName: "Васька",
+                photos: ['https://koshka.top/uploads/posts/2021-12/thumbs/1638773095_1-koshka-top-p-zelenoglazii-kotenok-1.jpg'],
+                description: "Найден пушистый котенок с зелеными глазами. Зовут Васька, очень ласковый",
+                mark: "",
+                district: "Приморский",
+                date: "2025-03-18",
+                status: "wasFound",
+                userId: 3
+            },
+            {
+                id: 4,
+                name: "Елена Козлова",
+                phone: "+79113334455",
+                email: "elena@mail.ru",
+                kind: "Собака",
+                petName: "Шарик",
+                photos: ['https://shop.purina.ru/media/wysiwyg/__nestlecontenthub_1_1_3_.webp'],
+                description: "Найдена собака породы хаски. Кличка Шарик, знает базовые команды",
+                mark: "HK-5678",
+                district: "Петроградский",
+                date: "2025-03-17",
+                status: "active",
+                userId: 4
+            },
+            {
+                id: 5,
+                name: "Дмитрий Волков",
+                phone: "+79116667788",
+                email: "dmitry@mail.ru",
+                kind: "Кошка",
+                petName: "Соня",
+                photos: ['https://biopet.az/resized/fit1220x550/center/pages/770/fars-pisiyi-1198x540px.jpg'],
+                description: "Найдена спокойная кошка. Кличка Соня, возраст около 2 лет",
+                mark: "",
+                district: "Адмиралтейский",
+                date: "2025-03-16",
+                status: "onModeration",
+                userId: 5
+            },
+            {
+                id: 6,
+                name: "Анна Смирнова",
+                phone: "+79118889900",
+                email: "anna@mail.ru",
+                kind: "Птица",
+                petName: "Кеша",
+                photos: ['https://hi-news.ru/wp-content/uploads/2025/05/parrot_voice_1-750x500.jpg'],
+                description: "Найден говорящий попугай. Кличка Кеша, умеет повторять слова",
+                mark: "",
+                district: "Василеостровский",
+                date: "2025-03-15",
+                status: "active",
+                userId: 6
+            }
+        ];
+
+        // Загрузка всех животных
+        function loadAllPets() {
+            const petsContainer = document.getElementById('pets-container');
+            
+            if (allPets.length === 0) {
+                petsContainer.innerHTML = '<div class="no-pets"><h3>Животные не найдены</h3><p>Попробуйте изменить параметры фильтра</p></div>';
+                return;
+            }
+
+            const petsHTML = allPets.map(pet => `
+                <div class="pet-card" data-kind="${pet.kind}" data-district="${pet.district}" data-petname="${pet.petName.toLowerCase()}">
+                    <img src="${pet.photos[0]}" alt="${pet.kind} ${pet.petName}">
+                    <div class="pet-card-content">
+                        <h3>${pet.kind} - ${pet.petName}</h3>
+                        <p class="pet-meta"><strong>Район:</strong> ${pet.district}</p>
+                        <p class="pet-meta"><strong>Дата:</strong> ${pet.date}</p>
+                        <p class="pet-meta"><strong>Клеймо:</strong> ${pet.mark || 'нет'}</p>
+                        <p>${pet.description.substring(0, 100)}...</p>
+                        <a href="pet-card.html?id=${pet.id}" class="btn-primary">Подробнее</a>
+                    </div>
+                </div>
+            `).join('');
+
+            petsContainer.innerHTML = petsHTML;
+        }
+
+        // Применение фильтров
+        function applyFilters() {
+            const kindFilter = document.getElementById('kind-filter').value;
+            const districtFilter = document.getElementById('district-filter').value;
+            const searchFilter = document.getElementById('search-filter').value.toLowerCase();
+            
+            const petCards = document.querySelectorAll('.pet-card');
+            let visibleCount = 0;
+
+            petCards.forEach(card => {
+                const kind = card.getAttribute('data-kind');
+                const district = card.getAttribute('data-district');
+                const petName = card.getAttribute('data-petname');
+                
+                const kindMatch = !kindFilter || kind === kindFilter;
+                const districtMatch = !districtFilter || district === districtFilter;
+                const searchMatch = !searchFilter || petName.includes(searchFilter);
+                
+                if (kindMatch && districtMatch && searchMatch) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            if (visibleCount === 0) {
+                document.getElementById('pets-container').innerHTML = 
+                    '<div class="no-pets"><h3>Животные не найдены</h3><p>Попробуйте изменить параметры фильтра</p></div>';
+            }
+        }
+
+        function clearFilters() {
+            document.getElementById('kind-filter').value = '';
+            document.getElementById('district-filter').value = '';
+            document.getElementById('search-filter').value = '';
+            loadAllPets();
+        }
+
+        document.addEventListener('DOMContentLoaded', loadAllPets);
+    </script>
+</body>
+</html>

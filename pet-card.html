@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Карточка животного - GET PET BACK</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">GET PET BACK</div>
+            <ul>
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="all-pets.html">Все животные</a></li>
+                <li><a href="search.html">Поиск</a></li>
+                <li><a href="login.html" id="auth-link">Войти</a></li>
+                <li><a href="profile.html" id="profile-link" style="display:none;">Личный кабинет</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <div id="pet-card" class="pet-card-detail">
+                <div class="loading">Загрузка информации о животном...</div>
+            </div>
+
+            <div class="back-link">
+                <a href="search.html" class="btn-secondary">← Назад к поиску</a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const demoPets = {
+            '1': {
+                id: 1,
+                name: "Иван Иванов",
+                phone: "+79111234567",
+                email: "user@user.ru",
+                kind: "Кошка",
+                petName: "Мурка",
+                photos: ['https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/GreekSphynxCat1.png/1280px-GreekSphynxCat1.png'],
+                description: "Найдена маленькая кошечка породы сфинкс, очень грустная. Откликается на кличку Мурка",
+                mark: "VL-0214",
+                district: "Василеостровский",
+                date: "2025-06-20",
+                status: "active",
+                userId: 1
+            },
+            '2': {
+                id: 2,
+                name: "Мария Петрова",
+                phone: "+79119876543",
+                email: "maria@mail.ru",
+                kind: "Собака",
+                petName: "Барсик",
+                photos: ['https://zoopt.ru/upload/webp/resize_cache/773/1148_560_1/f85f1c4e22de5231c962eafc898476a0.webp'],
+                description: "Найден веселый щенок породы лабрадор. Кличка - Барсик, отзывается на имя",
+                mark: "SP-1234",
+                district: "Центральный",
+                date: "2025-08-19",
+                status: "active",
+                userId: 2
+            },
+            '3': {
+                id: 3,
+                name: "Алексей Сидоров",
+                phone: "+79115556677",
+                email: "alex@mail.ru",
+                kind: "Кошка",
+                petName: "Васька",
+                photos: ['https://koshka.top/uploads/posts/2021-12/thumbs/1638773095_1-koshka-top-p-zelenoglazii-kotenok-1.jpg'],
+                description: "Найден пушистый котенок с зелеными глазами. Зовут Васька, очень ласковый",
+                mark: "",
+                district: "Приморский",
+                date: "2025-10-18",
+                status: "wasFound",
+                userId: 3
+            },
+            '4': {
+                id: 4,
+                name: "Елена Козлова",
+                phone: "+79113334455",
+                email: "elena@mail.ru",
+                kind: "Собака",
+                petName: "Шарик",
+                photos: ['https://shop.purina.ru/media/wysiwyg/__nestlecontenthub_1_1_3_.webp'],
+                description: "Найдена собака породы хаски. Кличка Шарик, знает базовые команды",
+                mark: "HK-5678",
+                district: "Петроградский",
+                date: "2025-11-17",
+                status: "active",
+                userId: 4
+            },
+            '5': {
+                id: 5,
+                name: "Дмитрий Волков",
+                phone: "+79116667788",
+                email: "dmitry@mail.ru",
+                kind: "Кошка",
+                petName: "Соня",
+                photos: ['https://biopet.az/resized/fit1220x550/center/pages/770/fars-pisiyi-1198x540px.jpg'],
+                description: "Найдена спокойная кошка. Кличка Соня, возраст около 2 лет",
+                mark: "",
+                district: "Адмиралтейский",
+                date: "2025-09-16",
+                status: "onModeration",
+                userId: 5
+            },
+            '6': {
+                id: 6,
+                name: "Анна Смирнова",
+                phone: "+79118889900",
+                email: "anna@mail.ru",
+                kind: "Птица",
+                petName: "Кеша",
+                photos: ['https://hi-news.ru/wp-content/uploads/2025/05/parrot_voice_1-750x500.jpg'],
+                description: "Найден говорящий попугай. Кличка Кеша, умеет повторять слова",
+                mark: "",
+                district: "Василеостровский",
+                date: "2025-10-15",
+                status: "active",
+                userId: 6
+            }
+        };
+
+        // Загрузка данных о животном
+        function loadPetData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const petId = urlParams.get('id');
+            const petCard = document.getElementById('pet-card');
+
+            if (!petId) {
+                petCard.innerHTML = '<div class="error">ID животного не указан</div>';
+                return;
+            }
+
+            setTimeout(() => {
+                const pet = demoPets[petId];
+                
+                if (pet) {
+                    displayPetCard(pet);
+                } else {
+                    petCard.innerHTML = `
+                        <div class="error">
+                            <h2>Животное не найдено</h2>
+                            <p>Животное с ID ${petId} не существует.</p>
+                            <p>Попробуйте следующие ID: 1, 2, 3, 4, 5, 6</p>
+                        </div>
+                    `;
+                }
+            }, 500);
+        }
+
+        // Отображение карточки животного
+        function displayPetCard(pet) {
+            const petCard = document.getElementById('pet-card');            
+            let photosHTML = '';
+            if (pet.photos && pet.photos.length > 0) {
+                photosHTML = `
+                    <div class="main-photo">
+                        <img src="${pet.photos[0]}" alt="${pet.kind}" style="width: 100%; border-radius: 8px;">
+                    </div>
+                `;
+                
+                if (pet.photos.length > 1) {
+                    photosHTML += `
+                        <div class="photo-thumbnails">
+                            ${pet.photos.map((photo, index) => `
+                                <img src="${photo}" alt="${pet.kind} - фото ${index + 1}" 
+                                     onclick="changeMainPhoto('${photo}')">
+                            `).join('')}
+                        </div>
+                    `;
+                }
+            } else {
+                photosHTML = '<p>Фотографии отсутствуют</p>';
+            }
+
+            const markHTML = pet.mark ? `
+                <div class="info-section">
+                    <h2>Клеймо</h2>
+                    <p><strong>${pet.mark}</strong></p>
+                </div>
+            ` : '';
+
+            petCard.innerHTML = `
+                <div class="pet-card-header fade-in">
+                    <h1>${pet.kind}</h1>
+                    <p class="pet-name">Кличка: ${pet.petName}</p>
+                    <p class="pet-meta">Найден в ${pet.district} районе, ${pet.date}</p>
+                </div>
+
+                <div class="pet-card-content">
+                    <div class="pet-photos">
+                        ${photosHTML}
+                    </div>
+
+                    <div class="pet-info">
+                        <div class="info-section">
+                            <h2>Описание</h2>
+                            <p>${pet.description}</p>
+                        </div>
+
+                        ${markHTML}
+
+                        <div class="info-section">
+                            <h2>Контактная информация</h2>
+                            <div class="contact-info">
+                                <p><strong>Имя:</strong> ${pet.name}</p>
+                                <p><strong>Телефон:</strong> <span class="phone-number">${pet.phone}</span></p>
+                                <p><strong>Email:</strong> <span class="email-address">${pet.email}</span></p>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button onclick="showContactInfo()" class="btn-primary">Показать контакты</button>
+                            <button onclick="sharePet()" class="btn-secondary">Поделиться</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Скрытая контактная информация -->
+                <div id="full-contact-info" class="hidden">
+                    <div class="contact-details fade-in">
+                        <h3>Контактная информация</h3>
+                        <p><strong>Телефон:</strong> <a href="tel:${pet.phone}">${pet.phone}</a></p>
+                        <p><strong>Email:</strong> <a href="mailto:${pet.email}">${pet.email}</a></p>
+                        <p><strong>Имя:</strong> ${pet.name}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Смена главного фото
+        function changeMainPhoto(photoUrl) {
+            const mainPhoto = document.querySelector('.main-photo img');
+            if (mainPhoto) {
+                mainPhoto.src = photoUrl;
+            }
+        }
+
+        // Показать контактную информацию
+        function showContactInfo() {
+            const contactInfo = document.getElementById('full-contact-info');
+            if (contactInfo) {
+                contactInfo.classList.remove('hidden');
+                contactInfo.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Поделиться информацией
+        function sharePet() {
+            const petUrl = window.location.href;
+            const petTitle = document.querySelector('h1')?.textContent || 'Найденное животное';
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: petTitle,
+                    text: 'Посмотрите это найденное животное',
+                    url: petUrl,
+                });
+            } else {
+                navigator.clipboard.writeText(petUrl).then(() => {
+                    alert('Ссылка скопирована в буфер обмена');
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadPetData);
+    </script>
+</body>
+</html>

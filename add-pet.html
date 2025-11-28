@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Карточка животного - GET PET BACK</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">GET PET BACK</div>
+            <ul>
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="all-pets.html">Все животные</a></li>                
+                <li><a href="search.html">Поиск</a></li>
+                <li><a href="login.html" id="auth-link">Войти</a></li>
+                <li><a href="profile.html" id="profile-link" style="display:none;">Личный кабинет</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <div id="pet-card" class="pet-card-detail">
+                <div class="loading">Загрузка информации о животном...</div>
+            </div>
+
+            <div class="back-link">
+                <a href="search.html" class="btn-secondary">← Назад к поиску</a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const demoPets = {
+            '1': {
+                kind: 'Собака',
+                district: 'Центральный',
+                date: '15.12.2023',
+                description: 'Дружелюбная собака средних размеров, найдена в парке. Рыжего окраса, на шее ошейник синего цвета.',
+                mark: 'AB123CD',
+                name: 'Мария',
+                phone: '+7 (912) 345-67-89',
+                email: 'maria@example.com',
+                photos: [
+                    'https://images.unsplash.com/photo-1552053831-71594a27632d?w=400&h=300&fit=crop',
+                    'https://images.unsplash.com/photo-1561037404-61cd46aa615b?w=400&h=300&fit=crop'
+                ]
+            },
+            '2': {
+                kind: 'Кот',
+                district: 'Северный',
+                date: '10.12.2023',
+                description: 'Пушистый черно-белый кот, очень ласковый. Найден возле подъезда многоэтажного дома.',
+                mark: '',
+                name: 'Антон',
+                phone: '+7 (923) 456-78-90',
+                email: 'anton@example.com',
+                photos: [
+                    'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400&h=300&fit=crop'
+                ]
+            }
+        };
+
+        // Загрузка данных о животном
+        function loadPetData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const petId = urlParams.get('id') || '1';
+            const petCard = document.getElementById('pet-card');
+
+            console.log('Loading pet ID:', petId);
+
+            // Имитация задержки загрузки
+            setTimeout(() => {
+                const pet = demoPets[petId];
+                
+                if (pet) {
+                    displayPetCard(pet);
+                } else {
+                    petCard.innerHTML = `
+                        <div class="error">
+                            <h2>Животное не найдено</h2>
+                            <p>Животное с ID ${petId} не существует в базе данных.</p>
+                            <p>Попробуйте следующие ID: 1, 2</p>
+                        </div>
+                    `;
+                }
+            }, 800);
+        }
+
+        // Отображение карточки животного
+        function displayPetCard(pet) {
+            const petCard = document.getElementById('pet-card');
+            
+            let photosHTML = '';
+            if (pet.photos && pet.photos.length > 0) {
+                photosHTML = `
+                    <div class="main-photo">
+                        <img src="${pet.photos[0]}" alt="${pet.kind}" style="width: 100%; border-radius: 8px;">
+                    </div>
+                `;
+                
+                if (pet.photos.length > 1) {
+                    photosHTML += `
+                        <div class="photo-thumbnails">
+                            ${pet.photos.map((photo, index) => `
+                                <img src="${photo}" alt="${pet.kind} - фото ${index + 1}" 
+                                     onclick="changeMainPhoto('${photo}')" style="width: 80px; height: 60px; object-fit: cover; cursor: pointer; border: 2px solid #ddd; border-radius: 4px;">
+                            `).join('')}
+                        </div>
+                    `;
+                }
+            } else {
+                photosHTML = '<p>Фотографии отсутствуют</p>';
+            }
+
+            const markHTML = pet.mark ? `
+                <div class="info-section">
+                    <h2>Клеймо</h2>
+                    <p>${pet.mark}</p>
+                </div>
+            ` : '';
+
+            petCard.innerHTML = `
+                <div class="pet-card-header fade-in">
+                    <h1>${pet.kind}</h1>
+                    <p class="pet-meta">Найден в ${pet.district} районе, ${pet.date}</p>
+                </div>
+
+                <div class="pet-card-content">
+                    <div class="pet-photos">
+                        ${photosHTML}
+                    </div>
+
+                    <div class="pet-info">
+                        <div class="info-section">
+                            <h2>Описание</h2>
+                            <p>${pet.description}</p>
+                        </div>
+
+                        ${markHTML}
+
+                        <div class="info-section">
+                            <h2>Контактная информация</h2>
+                            <div class="contact-info">
+                                <p><strong>Имя:</strong> ${pet.name}</p>
+                                <p><strong>Телефон:</strong> <span class="phone-number">${pet.phone}</span></p>
+                                <p><strong>Email:</strong> <span class="email-address">${pet.email}</span></p>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button onclick="showContactInfo()" class="btn-primary">Показать контакты</button>
+                            <button onclick="sharePet()" class="btn-secondary">Поделиться</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Скрытая контактная информация -->
+                <div id="full-contact-info" class="hidden" style="padding: 2rem; background: #f8f9fa; margin: 1rem; border-radius: 8px;">
+                    <div class="contact-details fade-in">
+                        <h3>Контактная информация</h3>
+                        <p><strong>Телефон:</strong> <a href="tel:${pet.phone}">${pet.phone}</a></p>
+                        <p><strong>Email:</strong> <a href="mailto:${pet.email}">${pet.email}</a></p>
+                        <p><strong>Имя:</strong> ${pet.name}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Смена главного фото
+        function changeMainPhoto(photoUrl) {
+            const mainPhoto = document.querySelector('.main-photo img');
+            if (mainPhoto) {
+                mainPhoto.src = photoUrl;
+            }
+        }
+
+        // Показать контактную информацию
+        function showContactInfo() {
+            const contactInfo = document.getElementById('full-contact-info');
+            if (contactInfo) {
+                contactInfo.classList.remove('hidden');
+                contactInfo.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Поделиться информацией
+        function sharePet() {
+            const petUrl = window.location.href;
+            const petTitle = document.querySelector('h1')?.textContent || 'Найденное животное';
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: petTitle,
+                    text: 'Посмотрите это найденное животное',
+                    url: petUrl,
+                });
+            } else {
+                navigator.clipboard.writeText(petUrl).then(() => {
+                    alert('Ссылка скопирована в буфер обмена');
+                });
+            }
+        }
+
+        // Загрузка данных при открытии страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, starting pet data load...');
+            loadPetData();
+        });
+    </script>
+</body>
+</html>

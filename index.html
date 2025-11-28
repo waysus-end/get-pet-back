@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GET PET BACK - Главная</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">GET PET BACK</div>
+            <ul>
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="all-pets.html">Все животные</a></li>
+                <li><a href="search.html">Поиск</a></li>
+                <li><a href="login.html" id="auth-link">Войти</a></li>
+                <li><a href="profile.html" id="profile-link" style="display:none;">Личный кабинет</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>Помогаем вернуть домашних питомцев</h1>
+            <p>Найденные животные ждут своих хозяев</p>
+        </section>
+
+        <section class="slider-section">
+            <h2>Недавно найденные животные</h2>
+            <div id="slider" class="slider">
+                <!-- Слайдеры будут добавлены через JS -->
+            </div>
+        </section>
+
+        <section class="quick-search">
+            <h2>Быстрый поиск</h2>
+            <input type="text" id="quick-search" placeholder="Введите описание животного...">
+            <div id="search-suggestions" class="suggestions"></div>
+        </section>
+
+        <section class="recent-pets">
+            <h2>Недавно найденные</h2>
+            <div id="recent-pets" class="pets-grid">
+                <!-- Карточки будут добавлены через JS -->
+            </div>
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="all-pets.html" class="btn-primary">Посмотреть всех животных</a>
+            </div>
+        </section>
+        <BR>
+        <section class="newsletter">
+            <h2>Подписка на новости</h2>
+            <form id="newsletter-form">
+                <input type="email" id="newsletter-email" placeholder="Ваш email" required>
+                <button type="submit">Подписаться</button>
+            </form>
+            <div id="newsletter-message"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 GET PET BACK. Помогаем воссоединять питомцев с хозяевами.</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
